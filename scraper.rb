@@ -26,10 +26,15 @@ def scrape_list(url)
     faction, faction_id = found.captures
 
     tds = img.xpath('ancestor::tr[1]/td')
+    # Included URL is a redirect, so resolve it
+    source_url = tds[2].css('a/@href').text
+    source = open(source_url) { |f| f.base_uri.to_s }
+
     family_name = tds[2].text.tidy
     given_name = tds[3].text.tidy
+
     data = { 
-      id: File.basename(img.text, '.*'),
+      id: source[/Cedula_Diputado=(\d+)/, 1],
       name: "%s %s" % [family_name, given_name],
       sort_name: "%s, %s" % [given_name, family_name],
       given_name: given_name,
@@ -38,9 +43,8 @@ def scrape_list(url)
       faction: faction,
       image: img.text,
       term: 2014,
-      source: tds[2].css('a/@href').text,
+      source: source,
     }
-    puts data[:faction]
     data[:image] = URI.join(url, data[:image]).to_s unless data[:image].to_s.empty?
     ScraperWiki.save_sqlite([:id, :term], data)
   end
