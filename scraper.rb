@@ -35,8 +35,8 @@ def scrape_list(url)
 
     data = { 
       id: source[/Cedula_Diputado=(\d+)/, 1],
-      name: "%s %s" % [family_name, given_name],
-      sort_name: "%s, %s" % [given_name, family_name],
+      name: "%s %s" % [given_name, family_name],
+      sort_name: "%s, %s" % [family_name, given_name],
       given_name: given_name,
       family_name: family_name,
       faction_id: faction_id,
