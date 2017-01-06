@@ -45,4 +45,5 @@ def scrape_list(url)
   end
 end
 
+ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
 scrape_list('http://www.asamblea.go.cr/Diputadas_Diputados/Lists/Diputados/Diputadas%20y%20diputados%20por%20Fraccin.aspx')
