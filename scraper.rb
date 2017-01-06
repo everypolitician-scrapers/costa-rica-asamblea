@@ -1,5 +1,6 @@
 #!/bin/env ruby
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'nokogiri'
 require 'pry'
@@ -10,7 +11,7 @@ OpenURI::Cache.cache_path = '.cache'
 
 class String
   def tidy
-    self.gsub(/[[:space:]]+/, ' ').strip
+    gsub(/[[:space:]]+/, ' ').strip
   end
 end
 
@@ -33,20 +34,20 @@ def scrape_list(url)
     family_name = tds[2].text.tidy
     given_name = tds[3].text.tidy
 
-    data = { 
-      id: source[/Cedula_Diputado=(\d+)/, 1],
-      name: "%s %s" % [given_name, family_name],
-      sort_name: "%s, %s" % [family_name, given_name],
-      given_name: given_name,
+    data = {
+      id:          source[/Cedula_Diputado=(\d+)/, 1],
+      name:        '%s %s' % [given_name, family_name],
+      sort_name:   '%s, %s' % [family_name, given_name],
+      given_name:  given_name,
       family_name: family_name,
-      faction_id: faction_id,
-      faction: faction,
-      image: img.text,
-      term: 2014,
-      source: source,
+      faction_id:  faction_id,
+      faction:     faction,
+      image:       img.text,
+      term:        2014,
+      source:      source,
     }
     data[:image] = URI.join(url, data[:image]).to_s unless data[:image].to_s.empty?
-    ScraperWiki.save_sqlite([:id, :term], data)
+    ScraperWiki.save_sqlite(%i(id term), data)
   end
 end
 
